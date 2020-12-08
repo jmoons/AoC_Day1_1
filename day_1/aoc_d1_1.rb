@@ -15,7 +15,7 @@ if !(part_two == "p2")
 
     input_file_values.each_with_index do | test_value, index |
       next if current_test_index == index
-      next unless ( test_value.digits[0] + fixed_value.digits[0] == 10 )
+      next unless ( (test_value.digits[0] + fixed_value.digits[0]) % 10 == 0 )
 
       if fixed_value + test_value == 2020
         puts "WINNER: #{fixed_value} + #{test_value} = #{fixed_value + test_value}"
@@ -40,7 +40,7 @@ else
 
     input_file_values.each_with_index do | test_value, index |
       next if ( current_test_index_1 == index || current_test_index_2 == index )
-      next unless ( test_value.digits[0] + fixed_value_1.digits[0] + fixed_value_2.digits[0] == 10 )
+      next unless ( (test_value.digits[0] + fixed_value_1.digits[0] + fixed_value_2.digits[0]) % 10 == 0 )
 
       if fixed_value_1 + fixed_value_2 + test_value == 2020
         puts "WINNER: #{fixed_value_1} + #{fixed_value_2} + #{test_value} = #{fixed_value_1 + fixed_value_2 + test_value}"
