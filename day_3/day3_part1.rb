@@ -1,3 +1,5 @@
+# Only count trees on finishing spot, not trees encountered while moving
+
 TREE_MARKER         = "#"
 MOVE_RIGHT_STEPS    = 3
 input_file          = File.open( "input_day_3.txt", "r" )
@@ -28,11 +30,3 @@ end
 input_file.close
 
 puts "Tree Count: #{tree_count}"
-# Grab a line from the file, move 3 to the right
-# If at the end of the string, wrap to beginning
-# Increment tree count for each X
-
-# Once moved three to the right, grab next line in file 
-# Increment tree count if it is an X
-
-# Only count trees on finishing spot
