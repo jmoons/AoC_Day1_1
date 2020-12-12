@@ -23,7 +23,6 @@ valid_passports             = []
 current_passport_info       = {}
 
 input_file.each_line do | line |
-  # puts "Length: #{line.length}, Line: #{line.inspect}"
   if line.length == 1
     # Start new passport
     passports << current_passport_info if current_passport_info.length != 0
