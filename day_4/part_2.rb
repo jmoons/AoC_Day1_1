@@ -29,25 +29,27 @@ input_passports             = []
 valid_passports             = []
 current_passport_info       = {}
 
-def validate_byr( passport_value, validation_hash )
+def validate_year( passport_value, validation_hash )
   ( passport_value.match( validation_hash[:expression] ) &&
     passport_value.to_i >= validation_hash[:min] &&
     passport_value.to_i <= validation_hash[:max]
   )
+end
+
+def validate_expression ( passport_value, validation_hash )
+  passport_value.match( validation_hash[:expression] )
+end
+
+def validate_byr( passport_value, validation_hash )
+  validate_year( passport_value, validation_hash )
 end
 
 def validate_iyr( passport_value, validation_hash )
-  ( passport_value.match( validation_hash[:expression] ) &&
-    passport_value.to_i >= validation_hash[:min] &&
-    passport_value.to_i <= validation_hash[:max]
-  )
+  validate_year( passport_value, validation_hash )
 end
 
 def validate_eyr( passport_value, validation_hash )
-  ( passport_value.match( validation_hash[:expression] ) &&
-    passport_value.to_i >= validation_hash[:min] &&
-    passport_value.to_i <= validation_hash[:max]
-  )
+  validate_year( passport_value, validation_hash )
 end
 
 def validate_hgt( passport_value, validation_hash )
@@ -63,7 +65,7 @@ def validate_hgt( passport_value, validation_hash )
 end
 
 def validate_hcl( passport_value, validation_hash )
-  passport_value.match( validation_hash[:expression] )
+  validate_expression( passport_value, validation_hash )
 end
 
 def validate_ecl( passport_value, validation_hash )
@@ -71,7 +73,7 @@ def validate_ecl( passport_value, validation_hash )
 end
 
 def validate_pid( passport_value, validation_hash )
-  passport_value.match( validation_hash[:expression] )
+  validate_expression( passport_value, validation_hash )
 end
 
 # Normalize the input - capture each passport's information from the input file
