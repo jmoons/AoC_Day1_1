@@ -8,13 +8,10 @@ SEAT_NUMBERS          = (0 ... TOTAL_NUMBER_OF_SEATS).to_a
 
 BOARDING_PASS_EXPRESSION    = /(?<row_moves>(F|B){7}(?<seat_moves>(L|R){3}))/
 BOARDING_PASS_FORWARD_MOVE  = "F"
-BOARDING_PASS_REAR_MOVE     = "B"
 BOARDING_PASS_LEFT_MOVE     = "L"
-BOARDING_PASS_RIGHT_MOVE    = "R"
 
 input_file          = File.open( "day_5_input.txt", "r" )
 highest_seat_number = 0
-seating_map         = {}
 taken_seats         = []
 
 input_file.each_line do | line |
@@ -50,33 +47,18 @@ input_file.each_line do | line |
   highest_seat_number = seat_number if seat_number > highest_seat_number
   taken_seats << seat_number
 
-  # puts "Line: #{line.chomp}, Seat Number: #{seat_number}, Highest Seat Number: #{highest_seat_number}, Row: #{possible_rows[0]}, Seat: #{possible_seats[0]}"
-  if seating_map.has_key?( possible_rows[0] )
-    seating_map[ possible_rows[0] ] << possible_seats[0]
-  else
-    seating_map[ possible_rows[0] ] = possible_seats
-  end
-
 end
 
 input_file.close
 
 puts "Highest Seat Number: #{highest_seat_number}"
 
-seating_map.sort.to_h.each_pair do |row, seat_array|
-  if seat_array.length != TOTAL_NUMBER_OF_SEATS
-    puts "Row: #{row}, Seats: #{seat_array.sort}"
-  end
-end
-
 taken_seats = taken_seats.sort
 previous_seat = taken_seats.shift
-taken_seats.each do |taken_seat|
-  if taken_seat == previous_seat + 1
-    previous_seat = taken_seat
-  else
-    puts "GAP!!!! - TakenSeat: #{taken_seat}, PreviousSeat: #{previous_seat}, MySeat: #{previous_seat + 1}"
+taken_seats.each do | taken_seat |
+  if taken_seat - previous_seat > 1
+    puts "Gap in seat number - Previous Seat: #{previous_seat}, Taken Seat: #{taken_seat}, My Seat: #{taken_seat - 1}"
     break
   end
+  previous_seat = taken_seat
 end
-# 653
