@@ -41,7 +41,7 @@ sliding_window_of_measurements.each_with_index do | sliding_window, sliding_wind
 
   current_measurement = sliding_window.inject(0, :+)
   previous_measurement = current_measurement if sliding_window_number == 0
-  number_of_increasing_measurements += 1 if sliding_window.inject(0, :+) > previous_measurement
+  number_of_increasing_measurements += 1 if current_measurement > previous_measurement
 
   previous_measurement = current_measurement
 end
