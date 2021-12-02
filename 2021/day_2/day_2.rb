@@ -1,6 +1,4 @@
 input_file = ARGV[0]
-horizontal_position = 0
-depth_position = 0
 
 part_one = {
   horizontal_position: 0,
