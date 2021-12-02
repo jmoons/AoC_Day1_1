@@ -1,22 +1,18 @@
-sample_data_set = [
-  199,
-  200,
-  208,
-  210,
-  200,
-  207,
-  240,
-  269,
-  260,
-  263
-]
-
+input_file = ARGV[0]
 number_of_increasing_measurements = 0
+previous_measurement = nil
 
-# The first measurement will be the basis of our first comparison
-previous_measurement = sample_data_set.shift
+unless File.exist?( input_file )
+  puts "#{input_file} is not a valid file"
+  exit
+end
 
-sample_data_set.each do | current_measurement |
+File.foreach( input_file ).with_index do | current_measurement, current_measurement_number |
+
+  current_measurement = current_measurement.chomp.to_i
+
+  # If this is the first entry in the file, it is our initial reading
+  previous_measurement = current_measurement if current_measurement_number == 0
 
   number_of_increasing_measurements += 1 if current_measurement > previous_measurement
   previous_measurement = current_measurement
