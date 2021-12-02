@@ -28,4 +28,4 @@ File.foreach( input_file ).with_index do | navigation_order, navigation_order_nu
 
 end
 
-puts "Part 1 - Final Position of #{horizontal_position} * #{depth_position} = #{(horizontal_position * depth_position)}"
+puts "Part 1 - Final Position of Horizontal: #{horizontal_position} * Depth: #{depth_position} = #{(horizontal_position * depth_position)}"
