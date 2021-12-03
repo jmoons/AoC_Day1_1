@@ -14,6 +14,8 @@ File.foreach( input_file ) do | diagnostic_report_line |
     diagnostic_value = diagnostic_value.chomp
     next if diagnostic_value.empty?
 
+    # Build up an array of arrays whose index contains an array of all the values of the input file in that corresponding position.
+    # Example parsed_report[1] will contain an array of all the second values found in each line of the input file.
     parsed_report[diagnostic_value_index] ? parsed_report[diagnostic_value_index] << diagnostic_value : parsed_report[diagnostic_value_index] = [ diagnostic_value ]
 
   end
