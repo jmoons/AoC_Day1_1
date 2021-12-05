@@ -30,21 +30,16 @@ moves_to_check = MOVES[0..current_move_index]
 we_have_a_winner = false
 winning_board = nil
 
-# For each game board, scan each row looking for a winner (all numbers in row are in moves_to_check)
-# If no row, then scan each column ([0,0], [1,0] ... [4,0], [0,1] .. [4,1])
-# If no row or column, add one more move to moves_to_check and retest
-# If winner is detected, go through game board and add all numbers not in moves_to_check. multiply by last value in moves_to_check
-
 while !we_have_a_winner
   GAME_BOARDS.each do | game_board |
     # Check the rows
-    # puts "!!!!!!!!!!!! moves_to_check: #{moves_to_check.inspect}"
-    # puts "!!!!!!!!!!!! game_board: #{game_board.inspect}"
 
     board_rows = game_board
     board_columns = game_board.transpose
     row_winner = board_rows.any?{ |row| (row & moves_to_check).length == row.length }
-    column_winner = board_columns.any?{ |column| (column & moves_to_check).length == column.length }
+    unless row_winner
+      column_winner = board_columns.any?{ |column| (column & moves_to_check).length == column.length }
+    end
 
     if (row_winner || column_winner)
       puts "We have a winning board: #{game_board.inspect}"
