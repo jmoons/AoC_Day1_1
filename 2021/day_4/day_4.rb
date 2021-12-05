@@ -35,9 +35,8 @@ winning_board = nil
 while !we_have_a_winner
   all_bingo_game_cards.each do | game_board |
 
-    # Check the rows
-    board_rows = game_board
-    row_winner = board_rows.any?{ |row| (row & all_bingo_moves[0..current_bingo_move_index]).length == row.length }
+    # Check the rows which is in effect the game board's array of rows.
+    row_winner = game_board.any?{ |row| (row & all_bingo_moves[0..current_bingo_move_index]).length == row.length }
     unless row_winner
       # No need to incur the transpose tax if we have a row winner
       board_columns = game_board.transpose
