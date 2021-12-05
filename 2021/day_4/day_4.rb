@@ -39,8 +39,7 @@ while !we_have_a_winner
     row_winner = game_board.any?{ |row| (row & all_bingo_moves[0..current_bingo_move_index]).length == row.length }
     unless row_winner
       # No need to incur the transpose tax if we have a row winner
-      board_columns = game_board.transpose
-      column_winner = board_columns.any?{ |column| (column & all_bingo_moves[0..current_bingo_move_index]).length == column.length }
+      column_winner = game_board.transpose.any?{ |column| (column & all_bingo_moves[0..current_bingo_move_index]).length == column.length }
     end
 
     if (row_winner || column_winner)
