@@ -18,11 +18,8 @@ File.foreach( input_file ) do | line_segment |
   line_segments << line_segment
 
   matched_line_segment = LINE_SEGMENT_REGULAR_EXPRESSION.match( line_segment )
-  max_x = matched_line_segment[1].to_i if matched_line_segment[1].to_i > max_x
-  max_x = matched_line_segment[3].to_i if matched_line_segment[3].to_i > max_x
-
-  max_y = matched_line_segment[2].to_i if matched_line_segment[2].to_i > max_y
-  max_y = matched_line_segment[4].to_i if matched_line_segment[4].to_i > max_y
+  max_x = [ matched_line_segment[1].to_i, matched_line_segment[3].to_i, max_x ].max
+  max_y = [ matched_line_segment[2].to_i, matched_line_segment[4].to_i, max_y ].max
 end
 
 puts "max_x: #{max_x}"
