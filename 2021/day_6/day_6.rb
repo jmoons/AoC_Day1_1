@@ -6,30 +6,28 @@ unless File.exist?( input_file )
 end
 
 lanternfish_population = []
+lanternfish_population_count_by_age = Array.new(9, 0)
 File.foreach( input_file ) do | line_segment |
   line_segment = line_segment.chomp
   next if line_segment.empty?
   lanternfish_population = line_segment.split(",").map{ |i| i.to_i }
 end
 
-NUMBER_OF_DAYS_TO_SIMULATE = 80
+NUMBER_OF_DAYS_TO_SIMULATE = 256
 NEW_PARENT_LANTERNFISH_AGE = 6
-READY_TO_BIRTH_LANTERNFISH_AGE = 0
-NEWBORN_LANTERNFISH_AGE = 8
+
+# Populate our array of ages: count from the input file
+lanternfish_population.each{ | lanternfish_age | lanternfish_population_count_by_age[lanternfish_age] += 1 }
 
 puts "Initial lanternfish population: #{lanternfish_population.inspect}"
 (1..NUMBER_OF_DAYS_TO_SIMULATE).each do | day_number |
 
-  # Let's see how busy the maternity ward will be today
-  number_of_new_lionfish = lanternfish_population.count(0)
+  # Count number of lanternfish that are 0 and store away
+  # Rotate array
+  # Update current age 6 by += number of lanternfish that were 0 previously
+  lanternfish_ready_to_give_birth = lanternfish_population_count_by_age[0].dup
+  lanternfish_population_count_by_age.rotate!
+  lanternfish_population_count_by_age[ NEW_PARENT_LANTERNFISH_AGE ] += lanternfish_ready_to_give_birth
 
-  lanternfish_population.each_with_index do | lanternfish, lanternfish_index |
-    if lanternfish == READY_TO_BIRTH_LANTERNFISH_AGE
-      lanternfish_population[lanternfish_index] = NEW_PARENT_LANTERNFISH_AGE
-    else
-      lanternfish_population[lanternfish_index] -= 1
-    end
-  end
-  number_of_new_lionfish.times{ |i| lanternfish_population << NEWBORN_LANTERNFISH_AGE }
-  puts "Day #{day_number} lanternfish population: #{lanternfish_population.length} fish"
+  puts "Day #{day_number} lanternfish population: #{lanternfish_population_count_by_age.sum} fish"
 end
