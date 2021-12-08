@@ -20,7 +20,9 @@ end
 # An array of all possible positions, even if a crab is not currently in it
 possible_crab_alignment_positions = (0..crab_positions.max).to_a
 
-# 16,1,2,0,4,2,7,1,2,14
+# Switch to toggle between part_1 or part_2
+part_1 = false
+
 # {
 #   crab_alignment_position => sum of moves required
 # }
@@ -28,7 +30,14 @@ sums_of_alignment_positions = {}
 possible_crab_alignment_positions.each do | possible_position |
   sum_of_fuel_for_possible_position = 0
   crab_positions.each do | crab_position |
-    sum_of_fuel_for_possible_position += (crab_position - possible_position).abs
+    crab_position_delta = (crab_position - possible_position).abs
+    # Nothing to do if this is the crab's current position
+    next if crab_position_delta == 0
+    if part_1
+      sum_of_fuel_for_possible_position += crab_position_delta
+    else
+      sum_of_fuel_for_possible_position += (1..crab_position_delta).reduce(:+)
+    end
   end
   sums_of_alignment_positions[possible_position] = sum_of_fuel_for_possible_position
 end
