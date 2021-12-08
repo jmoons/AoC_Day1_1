@@ -21,7 +21,7 @@ end
 possible_crab_alignment_positions = (0..crab_positions.max).to_a
 
 # Switch to toggle between part_1 or part_2
-part_1 = false
+part_1 = true
 
 # {
 #   crab_alignment_position => sum of moves required
@@ -29,6 +29,9 @@ part_1 = false
 sums_of_alignment_positions = {}
 possible_crab_alignment_positions.each do | possible_position |
   sum_of_fuel_for_possible_position = 0
+  # Go to each crab's position and determine how far its position is from the possible position
+  # For part 1, this is linear, each step is one unit of fuel
+  # For part 2, it is progressively larger, first step is one, second is two, etc.
   crab_positions.each do | crab_position |
     crab_position_delta = (crab_position - possible_position).abs
     # Nothing to do if this is the crab's current position
