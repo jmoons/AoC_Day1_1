@@ -24,12 +24,6 @@ DIGIT_SEGMENT_COUNT = {
   9 => 6
 }
 
-
-
-
-
-# puts "unique_display_segment_counts: #{unique_display_segment_counts}"
-
 input_file_lines = []
 File.foreach( input_file ) do | display_note |
   display_note = display_note.chomp
