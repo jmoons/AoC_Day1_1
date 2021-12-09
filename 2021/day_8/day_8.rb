@@ -25,18 +25,40 @@ DIGIT_SEGMENT_COUNT = {
 }
 
 
-count_of_unique_digits_displayed = 0
-collection_of_displayed_digits = []
-unique_display_segment_counts = DIGIT_SEGMENT_COUNT.values.find_all { | segment_count | DIGIT_SEGMENT_COUNT.values.count( segment_count ) == 1 }
-puts "unique_display_segment_counts: #{unique_display_segment_counts}"
+
+
+
+# puts "unique_display_segment_counts: #{unique_display_segment_counts}"
+
+input_file_lines = []
 File.foreach( input_file ) do | display_note |
   display_note = display_note.chomp
   next if display_note.empty?
+  input_file_lines << display_note
+end
 
-  signals = display_note.split(" | ")[0].split(" ")
-  display_output = display_note.split(" | ")[1].split(" ")
+# Part One - Figure out the number of digits that have unique segment counts in the input data
+unique_display_segment_counts = DIGIT_SEGMENT_COUNT.values.find_all { | segment_count | DIGIT_SEGMENT_COUNT.values.count( segment_count ) == 1 }
+count_of_unique_digits_displayed = 0
 
-  count_of_unique_digits_displayed += display_output.count{ |display_output_item| unique_display_segment_counts.include?(display_output_item.length) }
+input_file_lines.each do | input_file_line |
+
+  # Here we are only concerned with the displayed digits which happed to be to the right of the delimeter
+  input_file_line.split(" | ")[1].split(" ").each do | displayed_digit |
+    count_of_unique_digits_displayed += 1 if unique_display_segment_counts.include?( displayed_digit.length )
+  end
+
+end
+puts "count_of_unique_digits_displayed: #{count_of_unique_digits_displayed}"
+
+# Part Two - Figure out the digit represented by each string group from the left hand side of the delimeter.
+#            Then decode each of the four display digits from the right hand side of the delimeter. 
+#            After all four digits have been decoded, assemble the four into an int and add sum all ints
+collection_of_displayed_digits = []
+
+input_file_lines.each do | input_file_line |
+  signals = input_file_line.split(" | ")[0].split(" ")
+  display_output = input_file_line.split(" | ")[1].split(" ")
 
   # Decode signals
   # Array whose index corresponds to the string representation of the digit
@@ -83,16 +105,21 @@ File.foreach( input_file ) do | display_note |
 
   # Now find the four digits displayed
   displayed_digits = ""
-  display_output.each do | displayed_digit |
-    displayed_digits << decoded_signals.index{ |ds| ds.chars.sort == displayed_digit.chars.sort }.to_s
+  display_output.each do | display_output_digit |
+    displayed_digits << decoded_signals.index{ |ds| ds.chars.sort == display_output_digit.chars.sort }.to_s
   end
   puts "displayed_digits: #{displayed_digits}"
   collection_of_displayed_digits << displayed_digits
+
 end
+
+# Convert this array of strings to an array of INTs
 collection_of_displayed_digits = collection_of_displayed_digits.map{|d| d.to_i}
-puts "count_of_unique_digits_displayed: #{count_of_unique_digits_displayed}"
+
+# Sum the display digits
 puts "count_of_digits_displayed: #{collection_of_displayed_digits.inject(0,:+)}"
 
+# Doodle notes trying to figure out the pattern of deducing 
 # display_length  = digit_being_displayed
 # length 2        = 1
 # length 3        = 7
@@ -100,3 +127,29 @@ puts "count_of_digits_displayed: #{collection_of_displayed_digits.inject(0,:+)}"
 # length 7        = 8
 # length 5        = [ 2 || 3 || 5 ]
 # length 6        = [ 0 || 6 || 9 ]
+
+# .___A___.
+# |       |
+# F       B
+# |       |
+# .___G___.
+# |       |
+# E       C
+# |       |
+# .___D___.
+#  */
+
+# known
+# [1] = 2 -   B,C
+# [7] = 3 - A,B,C
+# [4] = 4 -   B,C,    F,G
+# [8] = 8 - A,B,C,D,E,F,G
+
+# unknown with 5 symbols
+# [2] = 5 - A,B,  D,E  ,G  => is neither 3 or 5
+# [3] = 5 - A,B,C,D    ,G  => must have 2 (both) segments of one
+# [5] = 5 - A,  C,D  ,F,G  => must have 3 segments of four
+# unknown with 6 symbols
+# [0] = 6 - A,B,C,D,E,F    => is neither 6 or 9
+# [6] = 6 - A  ,C,D,E,F,G  => must have 1 segment of one
+# [9] = 6 - A,B,C,D  ,F,G  => must have 4 segments of four
