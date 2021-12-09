@@ -10,6 +10,13 @@ unless File.exist?( input_file )
   exit
 end
 
+input_file_lines = []
+File.foreach( input_file ) do | display_note |
+  display_note = display_note.chomp
+  next if display_note.empty?
+  input_file_lines << display_note
+end
+
 # { digit => number of segments needed to produce digit }
 DIGIT_SEGMENT_COUNT = {
   0 => 6, 
@@ -23,13 +30,6 @@ DIGIT_SEGMENT_COUNT = {
   8 => 7,
   9 => 6
 }
-
-input_file_lines = []
-File.foreach( input_file ) do | display_note |
-  display_note = display_note.chomp
-  next if display_note.empty?
-  input_file_lines << display_note
-end
 
 # Part One - Figure out the number of digits that have unique segment counts in the input data
 unique_display_segment_counts = DIGIT_SEGMENT_COUNT.values.find_all { | segment_count | DIGIT_SEGMENT_COUNT.values.count( segment_count ) == 1 }
