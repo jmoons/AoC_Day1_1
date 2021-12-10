@@ -18,17 +18,15 @@ File.foreach( input_file ) do | cave_map_line |
 end
 
 # Part 1
-
 y_length = cave_map.length
 x_length = cave_map[0].length
-
-# puts "x_length: #{x_length}, y_length: #{y_length}"
 low_points = []
 low_points_coordinates = []
+
 (0...y_length).each do | y_coordinate |
   (0...x_length).each do | x_coordinate |
     current_value = cave_map[y_coordinate][x_coordinate]
-    # Build an array of all adjacent values
+    # Build an array of all geographically possible adjacent values
     adjacent_values = []
     adjacent_values << cave_map[y_coordinate][x_coordinate - 1] if x_coordinate > 0
     adjacent_values << cave_map[y_coordinate][x_coordinate + 1] if x_coordinate < (x_length - 1)
@@ -53,44 +51,23 @@ puts "Sum of each (Low Point + 1): #{low_points.inject(0){|low_point_sum, low_po
 def get_adjacent_basin_coordinates( origin_coordinates, cave_map )
   y_length = cave_map.length
   x_length = cave_map[0].length
-  adjacent_basin_coordinates = []
   origin_y_coordinate = origin_coordinates[0]
   origin_x_coordinate = origin_coordinates[1]
   origin_value = cave_map[origin_y_coordinate][origin_x_coordinate]
 
-  # Check to our right
-  if ( (origin_x_coordinate + 1) < x_length )
-    candidate_value = cave_map[origin_y_coordinate][(origin_x_coordinate + 1)]
-    if ( (origin_value < candidate_value) && (candidate_value != 9) )
-      adjacent_basin_coordinates << [origin_y_coordinate, (origin_x_coordinate + 1)]
-    end
-  end
+  # Build an array of all geographically possible adjacent values to check if part of the basin
+  coordiantes_to_check = []
+  coordiantes_to_check << [origin_y_coordinate, (origin_x_coordinate + 1)] if ( (origin_x_coordinate + 1) < x_length )
+  coordiantes_to_check << [origin_y_coordinate, (origin_x_coordinate - 1)] if ( (origin_x_coordinate - 1) >= 0 )
+  coordiantes_to_check << [(origin_y_coordinate - 1), origin_x_coordinate] if ( (origin_y_coordinate - 1) >= 0 )
+  coordiantes_to_check << [(origin_y_coordinate + 1), origin_x_coordinate] if ( (origin_y_coordinate + 1) < y_length )
 
-  # Check to our left
-  if ( (origin_x_coordinate - 1) >= 0 )
-    candidate_value = cave_map[origin_y_coordinate][(origin_x_coordinate - 1)]
-    if ( (origin_value < candidate_value) && (candidate_value != 9) )
-      adjacent_basin_coordinates << [origin_y_coordinate, (origin_x_coordinate - 1)]
-    end
-  end
+  # Of the geographically possible coordiantes, keep select and return those that satisfy the basin requirements:
+  # 1) Taller than the adjacent coordinate and 2) Not equal to 9
+  coordiantes_to_check.select{ | coordiante_to_check |  ( ( cave_map[coordiante_to_check[0]][coordiante_to_check[1]] != 9 ) &&
+                                                          ( origin_value < cave_map[coordiante_to_check[0]][coordiante_to_check[1]] )
+                                                        ) }
 
-  # Check above us
-  if ( (origin_y_coordinate - 1) >= 0 )
-    candidate_value = cave_map[(origin_y_coordinate - 1)][origin_x_coordinate]
-    if ( (origin_value < candidate_value) && (candidate_value != 9) )
-      adjacent_basin_coordinates << [(origin_y_coordinate - 1), origin_x_coordinate]
-    end
-  end
-
-  # Check below us
-  if ( (origin_y_coordinate + 1) < y_length )
-    candidate_value = cave_map[(origin_y_coordinate + 1)][origin_x_coordinate]
-    if ( (origin_value < candidate_value) && (candidate_value != 9) )
-      adjacent_basin_coordinates << [(origin_y_coordinate + 1), origin_x_coordinate]
-    end
-  end
-
-  adjacent_basin_coordinates
 end
 
 all_basin_coordinates = []
@@ -102,7 +79,7 @@ low_points_coordinates.each do | low_point |
   while adjacent_coordinates.length > 0
     # Each adjacent coordinate could itself have an adjacent coordinate, so we'll recursively work through.
     # Shift each adjacent coordinate out of collection and 1) store it in the low point's basin collection
-    # and 2) use as the basis for the next recursive search
+    # and 2) use as the basis to check for adjacent points that could also be part of the basin
     # When that collection is empty, we've exhausted all the basin points for this low point
     first_adjacent_coordinate = adjacent_coordinates.shift
     low_point_basin_coordinates << first_adjacent_coordinate
