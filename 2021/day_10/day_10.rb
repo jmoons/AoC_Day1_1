@@ -32,7 +32,15 @@ SYNTAX_ERROR_PENALTY_DICTIONARY = {
   ">" => 25137
 }
 
+SYNTAX_AUTOCOMPLETE_SCORE_DICTIONARY = {
+  "(" => 1,
+  "[" => 2,
+  "{" => 3,
+  "<" => 4
+}
+
 error_characters_penalty = 0
+auto_complete_scores = []
 syntax_lines.each do | syntax_line |
 
   opening_character_inventory = []
@@ -56,9 +64,19 @@ syntax_lines.each do | syntax_line |
         error_characters_penalty += SYNTAX_ERROR_PENALTY_DICTIONARY[current_character]
         # Since we abort after the first syntax error, clear out the remaining entries of this line so we can move on to the next line
         syntax_line.clear
+        opening_character_inventory.clear
       end
     end
   end
+  # For Part 2
+  # A Syntax error would have cleared the opening character collection, so any remaining are from an incomplete line
+  # Since its First In First Out, reverse the collection and tabulate the autocomplete points.
+  auto_complete_score = 0
+  opening_character_inventory.reverse.each do | opening_character |
+    auto_complete_score = ( 5 * auto_complete_score ) + SYNTAX_AUTOCOMPLETE_SCORE_DICTIONARY[opening_character]
+  end
+  auto_complete_scores << auto_complete_score if auto_complete_score > 0
 end
 
 puts "Total Syntax Error Penalty: #{error_characters_penalty}"
+puts "Autocomplete Middle Score: #{auto_complete_scores.sort[(auto_complete_scores.length / 2)]}"
