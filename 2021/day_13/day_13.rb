@@ -69,27 +69,28 @@ fold_instructions.each do | fold_instruction |
   # Instead, we'll have to iterate through
   if fold_instruction.keys.first == "x"
     sheet_of_dots = sheet_of_dots.transpose
-  end
+  else
+    # Folding Horizontally logic here
+    # Get our top and bottom halves
+    top_half = sheet_of_dots.slice(0, fold_instruction.values.first)
+    bottom_half = sheet_of_dots.slice( (fold_instruction.values.first + 1), (sheet_of_dots.length - 1) )
+    bottom_half = bottom_half.reverse
 
-  # Get our top and bottom halves
-  top_half = sheet_of_dots.slice(0, fold_instruction.values.first)
-  bottom_half = sheet_of_dots.slice( (fold_instruction.values.first + 1), (sheet_of_dots.length - 1) )
-  bottom_half = bottom_half.reverse
-
-  # Adjust if the top or bottom half of the sheet is longer
-  if top_half.length > bottom_half.length
-    folded_sheet_of_dots << top_half.shift( (top_half.length - bottom_half.length) )
-  elsif top_half.length < bottom_half.length
-    folded_sheet_of_dots << bottom_half.shift( (bottom_half.length - top_half.length) )
-  end
-
-  top_half.each_with_index do | top_half_row, y_index |
-    folded_row = []
-    top_half_row.each_with_index do | top_row_member, x_index |
-      (top_row_member == SHEET_OF_DOTS_MARKED_CHARACTER || bottom_half[y_index][x_index] == SHEET_OF_DOTS_MARKED_CHARACTER) ? folded_row << SHEET_OF_DOTS_MARKED_CHARACTER : folded_row << SHEET_OF_DOTS_EMPTY_CHARACTER
+    # Adjust if the top or bottom half of the sheet is longer
+    if top_half.length > bottom_half.length
+      folded_sheet_of_dots << top_half.shift( (top_half.length - bottom_half.length) )
+    elsif top_half.length < bottom_half.length
+      folded_sheet_of_dots << bottom_half.shift( (bottom_half.length - top_half.length) )
     end
-    folded_sheet_of_dots << folded_row
-    total_visible_dots += folded_row.count(SHEET_OF_DOTS_MARKED_CHARACTER)
+
+    top_half.each_with_index do | top_half_row, y_index |
+      folded_row = []
+      top_half_row.each_with_index do | top_row_member, x_index |
+        (top_row_member == SHEET_OF_DOTS_MARKED_CHARACTER || bottom_half[y_index][x_index] == SHEET_OF_DOTS_MARKED_CHARACTER) ? folded_row << SHEET_OF_DOTS_MARKED_CHARACTER : folded_row << SHEET_OF_DOTS_EMPTY_CHARACTER
+      end
+      folded_sheet_of_dots << folded_row
+      total_visible_dots += folded_row.count(SHEET_OF_DOTS_MARKED_CHARACTER)
+    end
   end
 
   # The folded sheet of dots becomes the sheet of dots for the next iteration
