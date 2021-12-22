@@ -68,7 +68,34 @@ fold_instructions.each do | fold_instruction |
   # Transpose won't work here as we are not guranteed a symmetrical sheet
   # Instead, we'll have to iterate through
   if fold_instruction.keys.first == "x"
-    sheet_of_dots = sheet_of_dots.transpose
+
+    sheet_of_dots.each do | row |
+
+      left_hand_side = row.slice(0, fold_instruction.values.first)
+      right_hand_side = row.slice( (fold_instruction.values.first + 1), (row.length - 1) )
+
+      # Need to reverse the right hand side as it is getting folded over
+      right_hand_side = right_hand_side.reverse
+      folded_row = []
+      if left_hand_side.length > right_hand_side.length
+        while (left_hand_side.length != right_hand_side.length)
+          folded_row << left_hand_side.shift
+        end
+      elsif left_hand_side.length < right_hand_side.length
+        while (left_hand_side.length != right_hand_side.length)
+          folded_row << right_hand_side.shift
+        end
+      end
+
+      # Now they are equal
+      left_hand_side.each_with_index do | left_member, index |
+        ( left_member == "X" || right_hand_side[index] == "X" ) ? folded_row << "X" : folded_row << "."
+      end
+
+      folded_sheet_of_dots << folded_row
+
+    end
+
   else
     # Folding Horizontally logic here
     # Get our top and bottom halves
@@ -100,9 +127,10 @@ fold_instructions.each do | fold_instruction |
 
   # The folded sheet of dots becomes the sheet of dots for the next iteration
   sheet_of_dots = folded_sheet_of_dots
+  folded_sheet_of_dots = []
 
 end
 
-puts "folded_sheet_of_dots"
-folded_sheet_of_dots.each{|row| puts row.inspect}
+puts "sheet_of_dots"
+sheet_of_dots.each{|row| puts row.inspect}
 puts "total_visible_dots: #{total_visible_dots}"
