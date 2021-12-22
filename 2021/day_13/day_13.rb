@@ -89,7 +89,7 @@ fold_instructions.each do | fold_instruction |
 
       # Now they are equal
       left_hand_side.each_with_index do | left_member, index |
-        ( left_member == "X" || right_hand_side[index] == "X" ) ? folded_row << "X" : folded_row << "."
+        ( left_member == SHEET_OF_DOTS_MARKED_CHARACTER || right_hand_side[index] == SHEET_OF_DOTS_MARKED_CHARACTER ) ? folded_row << SHEET_OF_DOTS_MARKED_CHARACTER : folded_row << "."
       end
 
       folded_sheet_of_dots << folded_row
