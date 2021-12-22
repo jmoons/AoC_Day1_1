@@ -74,13 +74,18 @@ fold_instructions.each do | fold_instruction |
     # Get our top and bottom halves
     top_half = sheet_of_dots.slice(0, fold_instruction.values.first)
     bottom_half = sheet_of_dots.slice( (fold_instruction.values.first + 1), (sheet_of_dots.length - 1) )
+    # Reverse the bottom half as the last element will be the first element after the fold
     bottom_half = bottom_half.reverse
 
     # Adjust if the top or bottom half of the sheet is longer
     if top_half.length > bottom_half.length
-      folded_sheet_of_dots << top_half.shift( (top_half.length - bottom_half.length) )
+      while ( top_half.length != bottom_half.length )
+        folded_sheet_of_dots << top_half.shift
+      end
     elsif top_half.length < bottom_half.length
-      folded_sheet_of_dots << bottom_half.shift( (bottom_half.length - top_half.length) )
+      while ( top_half.length != bottom_half.length )
+        folded_sheet_of_dots << bottom_half.shift
+      end
     end
 
     top_half.each_with_index do | top_half_row, y_index |
