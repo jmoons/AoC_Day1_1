@@ -17,6 +17,14 @@ part1_priority_sum = 0
 part2_priority_sum = 0
 part_2_input = []
 
+def get_priority_value( item )
+  if LOWERCASE_WEIGHTS.include?( item )
+    LOWERCASE_WEIGHTS.index(item) + 1
+  else
+    LOWERCASE_WEIGHTS.index(item.downcase) + CAPITAL_LETTER_OFFSET
+  end
+end
+
 File.foreach( input_file ) do | input_file_line |
   input_file_line = input_file_line.chomp
 
@@ -33,11 +41,7 @@ File.foreach( input_file ) do | input_file_line |
   rucksack1_misplaced = rucksack1.keep_if{ |item| rucksack2.include?( item ) }[0]
   rucksack2_misplaced = rucksack2.keep_if{ |item| rucksack1.include?( item ) }[0]
 
-  if LOWERCASE_WEIGHTS.include?( rucksack1_misplaced )
-    part1_priority_sum += (LOWERCASE_WEIGHTS.index(rucksack1_misplaced) + 1)
-  else
-    part1_priority_sum += (LOWERCASE_WEIGHTS.index(rucksack1_misplaced.downcase) + CAPITAL_LETTER_OFFSET)
-  end
+  part1_priority_sum += get_priority_value( rucksack1_misplaced )
 
 end
 
@@ -45,11 +49,7 @@ part_2_input.each_slice(3) do | group_rucksacks |
 
   unique_item = group_rucksacks[0].split("").uniq.keep_if{ | item | ( group_rucksacks[1].split("").uniq.include?(item) && group_rucksacks[2].split("").uniq.include?(item) ) }[0]
 
-  if LOWERCASE_WEIGHTS.include?( unique_item )
-    part2_priority_sum += (LOWERCASE_WEIGHTS.index(unique_item) + 1)
-  else
-    part2_priority_sum += (LOWERCASE_WEIGHTS.index(unique_item.downcase) + CAPITAL_LETTER_OFFSET)
-  end
+  part2_priority_sum += get_priority_value( unique_item )
 
 end
 puts "part1_priority_sum: #{part1_priority_sum}"
